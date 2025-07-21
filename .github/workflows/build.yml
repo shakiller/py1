@@ -1,0 +1,28 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential zip unzip openjdk-17-jdk python3 python3-pip
+        pip install buildozer cython pillow kivy
+
+    - name: Build APK
+      run: yes | buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: screenmirror-apk
+        path: bin/*.apk
